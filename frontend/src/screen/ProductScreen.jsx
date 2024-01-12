@@ -17,6 +17,7 @@ const ProductScreen = () => {
   }, [productId]);
 
   return (
+    // can be refactor so the first render before useEffect wont show nothing.
     <>
       <Link to="/" className="btn btn-light my-3">
         Go Back
