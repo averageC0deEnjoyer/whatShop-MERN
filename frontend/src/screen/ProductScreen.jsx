@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import { useGetProductQuery } from '../slices/productsApiSlice';
+import Loader from '../components/Loader';
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
@@ -17,7 +18,7 @@ const ProductScreen = () => {
     // can be refactor so the first render before useEffect wont show nothing.
     <>
       {isLoading ? (
-        <h2>Loading...</h2>
+        <Loader />
       ) : isError ? (
         <div>{error?.data?.message || error.error}</div>
       ) : (
