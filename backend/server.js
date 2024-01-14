@@ -16,7 +16,7 @@ connectDB().then(() => {
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
 
 app.get('/', (req, res) => {
   return res.json({ msg: 'hola!' });
