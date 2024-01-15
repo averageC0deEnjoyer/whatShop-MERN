@@ -6,9 +6,7 @@ import { useSelector } from 'react-redux';
 
 const Header = () => {
   const { cartItems } = useSelector((store) => store.cart);
-  console.log(cartItems);
   const itemsCount = cartItems.reduce((a, i) => a + i.qty, 0);
-  console.log(itemsCount);
   return (
     <header>
       <Navbar expand="md" bg="dark" variant="dark" collapseOnSelect>
