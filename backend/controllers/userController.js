@@ -1,11 +1,41 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import User from '../models/userModel.js';
+import jwt from 'jsonwebtoken';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-  res.send('auth user');
+  const { email, password } = req.body;
+
+  const userExist = await User.findOne({ email });
+
+  //check if user exist AND password match
+  if (userExist && (await userExist.verifyPassword(password))) {
+    //create JWT token
+    const token = jwt.sign({ userId: userExist._id }, process.env.JWT_SECRET, {
+      expiresIn: '10d',
+    });
+
+    //set JWT as HTTP only cookie
+    // will be send every subsequent request
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'strict',
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      _id: userExist._id,
+      name: userExist.name,
+      email: userExist.email,
+      isAdmin: userExist.isAdmin,
+    });
+  } else {
+    res.status(401);
+    throw new Error('Bad Credentials');
+  }
 });
 
 // @desc    Register user
