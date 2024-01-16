@@ -7,6 +7,12 @@ import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
+let corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200,
+  credentials: true,
+};
+
 dotenv.config();
 const port = process.env.PORT || 5000;
 
@@ -26,7 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 // cookie parser middleware (to access req.cookies)
 app.use(cookieParser());
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.get('/', (req, res) => {
   return res.json({ msg: 'hola!' });

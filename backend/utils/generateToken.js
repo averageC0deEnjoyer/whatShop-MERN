@@ -5,9 +5,9 @@ const generateToken = (res, userId) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: '10d',
   });
-
   //set JWT as HTTP only cookie
   // will be send every subsequent request
+  // console.log(token);
   res.cookie('jwt', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== 'development',
