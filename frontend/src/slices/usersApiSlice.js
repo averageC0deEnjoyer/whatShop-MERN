@@ -11,6 +11,12 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
+    logout: builder.mutation({
+      query: () => ({
+        url: `${USERS_URL}/logout`,
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -18,4 +24,4 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 // we have to setup useEffect and also create useGetProfileQuery to fetch the user data
 //and save the data using setCredentials.
 
-export const { useLoginMutation } = usersApiSlice;
+export const { useLoginMutation, useLogoutMutation } = usersApiSlice;
