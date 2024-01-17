@@ -109,7 +109,7 @@ const RegisterScreen = () => {
 
       <Row>
         <Col>
-          Have an Account??{' '}
+          Have an Account?{' '}
           {/* when does this redirect have value? maybe later on */}
           <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
             Login
