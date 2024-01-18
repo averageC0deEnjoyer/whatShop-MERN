@@ -55,6 +55,10 @@ const getOrderById = asyncHandler(async (req, res) => {
     'name email'
   );
 
+  // can refactor only the user who has the order can see it
+  // and create new controller for Admin to see everything
+  // console.log(order);
+  // console.log(req.user);
   if (order) {
     return res.status(200).json(order);
   } else {
@@ -67,7 +71,25 @@ const getOrderById = asyncHandler(async (req, res) => {
 //@route    PUT /api/orders/:id/pay
 //@access   Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-  return res.send('Update order to paid');
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time: req.body.update_time,
+      email_address: req.body.payer.email_address,
+    };
+
+    const updatedOrder = await order.save();
+
+    return res.status(200).json(updatedOrder);
+  } else {
+    res.status(404);
+    throw new Error('Order not found');
+  }
 });
 
 //@desc     Update order isDelivered status
