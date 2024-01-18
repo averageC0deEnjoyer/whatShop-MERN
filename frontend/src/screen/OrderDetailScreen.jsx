@@ -43,8 +43,10 @@ const OrderDetailScreen = () => {
 
   const { userInfo } = useSelector((store) => store.auth);
 
+  //can refactor if payment method beside paypal, add code in useEffect and
+
   useEffect(() => {
-    //to fetch paypal button
+    //i think this is requirement for paypal button
     if (!errorPayPal && !loadingPayPal && paypal?.clientId) {
       const loadPayPalScript = async () => {
         paypalDispatch({
@@ -70,7 +72,7 @@ const OrderDetailScreen = () => {
         await payOrder({ orderId, details });
         refetch();
         toast.success('Payment Successful');
-      } catch (error) {
+      } catch (err) {
         toast.error(err?.data?.message || err.message);
       }
     });
