@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    exclude: ['js-big-decimal'],
+    exclude: ['js-big-decimal', '@paypal/react-paypal-js'],
   },
   //because i use vite, i need to setup proxy here. if i use CRA , i can just setup the proxy in the package.json
   // server: {
