@@ -23,7 +23,7 @@ const LoginScreen = () => {
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const redirect = sp.get('redirect') || '/';
-  console.log(redirect);
+  // console.log(redirect);
 
   useEffect(() => {
     //why dont we use ifCookieExist here? cause i think cookie can be tampered,
