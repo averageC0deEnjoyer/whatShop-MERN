@@ -114,28 +114,69 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @route   GET /api/users
 // @access  Private/Admin
 const getUsers = asyncHandler(async (req, res) => {
-  res.send('get users');
+  //exclude password field
+  const users = await User.find({}).select('-password');
+  return res.status(200).json(users);
 });
 
 // @desc    Get user by id
 // @route   GET /api/users/:id
 // @access  Private/Admin
 const getUserById = asyncHandler(async (req, res) => {
-  res.send('get user by id');
+  const user = await User.findById(req.params.id).select('-password');
+  if (user) {
+    return res.status(200).json(user);
+  } else {
+    res.status(404);
+    throw new Error('No user found');
+  }
 });
 
 // @desc    Delete user
 // @route   DELETE /api/users/:id
 // @access  Private/Admin
+// refactor maybe if user still has active order cant be deleted
 const deleteUser = asyncHandler(async (req, res) => {
-  res.send('Delete user');
+  const user = await User.findById(req.params.id).select('-password');
+  if (user) {
+    //cannot delete admin user
+    if (user.isAdmin) {
+      res.status(404);
+      throw new Error('Admin cannot be deleted');
+    }
+    await User.findByIdAndDelete(req.params.id);
+    return res.status(200).json({ message: 'User Deleted' });
+  } else {
+    res.status(404);
+    throw new Error('No user found');
+  }
 });
 
 // @desc    update user
 // @route   PUT /api/users/:id
 // @access  Private/Admin
 const updateUser = asyncHandler(async (req, res) => {
-  res.send('update user');
+  const user = await User.findById(req.params.id);
+  //since at the frontend were going to populate the form with existing data
+  //then we dont have to type user.name = req.body.name || user.name, just user.name = req.body.name
+  const { name, email, isAdmin } = req.body;
+  console.log(user);
+  if (user) {
+    user.name = name;
+    user.email = email;
+    user.isAdmin = isAdmin;
+    const updatedUser = await user.save();
+    console.log(updatedUser);
+    return res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
 });
 
 export {
