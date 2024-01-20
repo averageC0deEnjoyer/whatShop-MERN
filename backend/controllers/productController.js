@@ -47,14 +47,14 @@ const updateProduct = asyncHandler(async (req, res) => {
   console.log(req.body);
   const { name, brand, category, image, description, price, countInStock } =
     req.body;
-
+  console.log(req.body);
   const product = await Product.findById(productId);
 
   if (product) {
     product.name = name;
     product.brand = brand;
     product.category = category;
-    // product.image = image;
+    product.image = image;
     product.description = description;
     product.price = price;
     product.countInStock = countInStock;

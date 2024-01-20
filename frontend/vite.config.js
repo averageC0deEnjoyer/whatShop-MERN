@@ -7,15 +7,21 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['js-big-decimal', '@paypal/react-paypal-js'],
   },
-  //because i use vite, i need to setup proxy here. if i use CRA , i can just setup the proxy in the package.json
-  // server: {
-  //   proxy: {
-  //     '/api': {
-  //       target: 'http://localhost:5000',
-  //       changeOrigin: true,
-  //       secure: false,
-  //       rewrite: (path) => path.replace(/^\/api/, ''),
-  //     },
-  //   },
-  // },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:5000',
+      '/uploads': 'http://localhost:5000',
+    },
+    //because i use vite, i need to setup proxy here. if i use CRA , i can just setup the proxy in the package.json
+    // server: {
+    //   proxy: {
+    //     '/api': {
+    //       target: 'http://localhost:5000',
+    //       changeOrigin: true,
+    //       secure: false,
+    //       rewrite: (path) => path.replace(/^\/api/, ''),
+    //     },
+    //   },
+    // },
+  },
 });

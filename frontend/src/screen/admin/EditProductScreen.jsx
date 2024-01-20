@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   useUpdateProductMutation,
   useGetProductDetailQuery,
+  useUploadProductImageMutation,
 } from '../../slices/productsApiSlice';
 import { Button, Form } from 'react-bootstrap';
 import FormContainer from '../../components/FormContainer';
@@ -24,24 +25,28 @@ const EditProductScreen = () => {
   const [updateProduct, { isLoading: loadingUpdateProduct }] =
     useUpdateProductMutation();
 
+  const [uploadProductImage, { isLoading: loadingUpload }] =
+    useUploadProductImageMutation();
+
   const {
     data: product,
     isLoading,
     error,
   } = useGetProductDetailQuery(productId);
-  console.log(product);
   //fetch existing data
   useEffect(() => {
     if (product) {
       setName(product.name);
       setBrand(product.brand);
       setCategory(product.category);
+      setImage(product.image);
       setDescription(product.description);
       setPrice(product.price);
       setCountInStock(product.countInStock);
     }
   }, [product]);
 
+  //to submit updated product info
   const updateHandler = async (e) => {
     e.preventDefault();
     try {
@@ -49,6 +54,7 @@ const EditProductScreen = () => {
         productId,
         name,
         brand,
+        image,
         category,
         description,
         price,
@@ -58,6 +64,19 @@ const EditProductScreen = () => {
       navigate('/admin/productlist');
     } catch (error) {
       toast.error(error.error);
+    }
+  };
+  //handle image upload
+  const uploadFileHandler = async (e) => {
+    const formData = new FormData();
+    formData.append('image', e.target.files[0]);
+    try {
+      const res = await uploadProductImage(formData).unwrap();
+      console.log(res);
+      toast.success(res.message);
+      setImage(res.image);
+    } catch (error) {
+      toast.error(error?.data?.message || error.error);
     }
   };
 
@@ -101,15 +120,22 @@ const EditProductScreen = () => {
                 onChange={(e) => setCategory(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            {/*<Form.Group controlId="image" className="my-2">
+
+            <Form.Group controlId="image" className="my-2">
               <Form.Label>Image</Form.Label>
               <Form.Control
-              type="text"
-              placeholder="enter image"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
+                type="text"
+                placeholder="enter image url"
+                value={image}
+                // onChange={setImage}
               ></Form.Control>
-            </Form.Group> */}
+              <Form.Control
+                type="file"
+                label="Choose file"
+                onChange={uploadFileHandler}
+              ></Form.Control>
+            </Form.Group>
+
             <Form.Group controlId="description" className="my-2">
               <Form.Label>Description</Form.Label>
               <Form.Control
