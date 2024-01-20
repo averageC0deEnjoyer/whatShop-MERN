@@ -22,4 +22,20 @@ const getProductById = asyncHandler(async (req, res) => {
   throw new Error('Resource not found');
 });
 
-export { getProducts, getProductById };
+//@desc   Create a product, user click product then automatically create default product
+//@route  POST /api/products
+//@access Private/Admin
+const createProduct = asyncHandler(async (req, res) => {
+  const product = new Product({
+    user: req.user._id,
+    name: 'sample name',
+    image: '/images/sample.jpg',
+    brand: 'sample brand',
+    category: 'sample category',
+    description: 'sample description',
+  });
+  const newProduct = await product.save();
+  return res.status(201).json({ message: 'Created New Product' });
+});
+
+export { getProducts, getProductById, createProduct };

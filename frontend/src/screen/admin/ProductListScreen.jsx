@@ -1,12 +1,29 @@
-import React from 'react';
-import { useGetProductsQuery } from '../../slices/productsApiSlice';
+import {
+  useGetProductsQuery,
+  useCreateProductMutation,
+} from '../../slices/productsApiSlice';
 import { Table, Row, Col, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import Loader from '../../components/Loader';
 import Message from '../../components/Message';
+import { toast } from 'react-toastify';
 
 const ProductListScreen = () => {
-  const { data: products, isLoading, error } = useGetProductsQuery();
+  const { data: products, refetch, isLoading, error } = useGetProductsQuery();
+
+  const [createProduct, { isLoading: loadingCreate }] =
+    useCreateProductMutation();
+
+  const createProductHandler = async () => {
+    try {
+      await createProduct();
+      refetch();
+      toast.success('Success create product');
+    } catch (error) {
+      toast.error(error?.data?.message || error.error);
+    }
+  };
+
   return (
     <>
       <Row className="align-items-center">
@@ -14,9 +31,13 @@ const ProductListScreen = () => {
           <h1>Product List</h1>
         </Col>
         <Col className="text-end">
-          <Button className="m-3 btn-sm">Create New Product</Button>
+          <Button className="m-3 btn-sm" onClick={createProductHandler}>
+            Create New Product
+          </Button>
         </Col>
       </Row>
+
+      {loadingCreate && <Loader />}
 
       {isLoading ? (
         <Loader />
