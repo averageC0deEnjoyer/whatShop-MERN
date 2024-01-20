@@ -1,6 +1,7 @@
 import {
   useGetProductsQuery,
   useCreateProductMutation,
+  useDeleteProductMutation,
 } from '../../slices/productsApiSlice';
 import { Table, Row, Col, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -14,6 +15,10 @@ const ProductListScreen = () => {
   const [createProduct, { isLoading: loadingCreate }] =
     useCreateProductMutation();
 
+  const [deleteProduct, { isLoading: loadingDelete }] =
+    useDeleteProductMutation();
+
+  //create new product
   const createProductHandler = async () => {
     try {
       await createProduct();
@@ -24,6 +29,16 @@ const ProductListScreen = () => {
     }
   };
 
+  //delete a product
+  const deleteProductHandler = async (productId) => {
+    try {
+      await deleteProduct(productId);
+      refetch();
+      toast.success('Product Deleted');
+    } catch (error) {
+      toast.error(error?.data?.message || error.error);
+    }
+  };
   return (
     <>
       <Row className="align-items-center">
@@ -38,6 +53,7 @@ const ProductListScreen = () => {
       </Row>
 
       {loadingCreate && <Loader />}
+      {loadingDelete && <Loader />}
 
       {isLoading ? (
         <Loader />
@@ -69,7 +85,13 @@ const ProductListScreen = () => {
                       Edit
                     </Button>
                   </LinkContainer>
-                  <Button variant="danger" className="btn-sm">
+                  <Button
+                    variant="danger"
+                    className="btn-sm"
+                    onClick={() => {
+                      deleteProductHandler(product._id);
+                    }}
+                  >
                     Delete
                   </Button>
                 </td>
