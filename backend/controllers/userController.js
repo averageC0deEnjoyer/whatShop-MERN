@@ -136,6 +136,8 @@ const getUserById = asyncHandler(async (req, res) => {
 // @route   DELETE /api/users/:id
 // @access  Private/Admin
 // refactor maybe if user still has active order cant be deleted
+//dont forget to add cant delete user if there is order
+//cause it will cause big fat error
 const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id).select('-password');
   if (user) {
@@ -164,7 +166,7 @@ const updateUser = asyncHandler(async (req, res) => {
   if (user) {
     user.name = name;
     user.email = email;
-    user.isAdmin = isAdmin;
+    user.isAdmin = Boolean(isAdmin);
     const updatedUser = await user.save();
     console.log(updatedUser);
     return res.status(200).json({

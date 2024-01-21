@@ -40,6 +40,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5,
       providesTags: ['Users'],
     }),
+    //admin (to populate edit user form)
+    getUserById: builder.query({
+      query: (userId) => ({
+        url: `${USERS_URL}/${userId}`,
+        method: 'GET',
+      }),
+    }),
     //admin
     editUser: builder.mutation({
       query: (data) => ({
@@ -47,6 +54,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
+      invalidatesTags: ['Users'],
     }),
     //admin
     deleteUser: builder.mutation({
@@ -69,6 +77,7 @@ export const {
   useRegisterMutation,
   useUpdateProfileMutation,
   useGetUsersQuery,
+  useGetUserByIdQuery,
   useEditUserMutation,
   useDeleteUserMutation,
 } = usersApiSlice;
