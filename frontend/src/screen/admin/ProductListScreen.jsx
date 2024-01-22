@@ -13,9 +13,12 @@ import Paginate from '../../components/Paginate';
 import { useSelector } from 'react-redux';
 
 const ProductListScreen = () => {
-  const { pageNumber } = useParams();
-  const { data, refetch, isLoading, error } = useGetProductsQuery(pageNumber);
-
+  const { searchKeyword, pageNumber } = useParams();
+  const { data, refetch, isLoading, error } = useGetProductsQuery({
+    searchKeyword,
+    pageNumber,
+  });
+  console.log(data);
   const [createProduct, { isLoading: loadingCreate }] =
     useCreateProductMutation();
 
@@ -77,7 +80,7 @@ const ProductListScreen = () => {
             </tr>
           </thead>
           <tbody>
-            {data.products.map((product) => (
+            {data?.products?.map((product) => (
               <tr key={product._id}>
                 <td>{product._id}</td>
                 <td>{product.name}</td>

@@ -4,12 +4,13 @@ import { apiSlice } from './apiSlice';
 export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: (pageNumber) => ({
+      query: ({ searchKeyword, pageNumber }) => ({
         url: PRODUCTS_URL,
         //will be retrived by backend in req.query.
         params: {
+          searchKeyword: searchKeyword,
           pageNumber: pageNumber,
-          pageSize: 2,
+          pageSize: 4,
         },
       }),
       keepUnusedDataFor: 5,
@@ -59,6 +60,12 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Products'],
     }),
+    getTopProducts: builder.query({
+      query: () => ({
+        url: `${PRODUCTS_URL}/top`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
   }),
 });
 
@@ -70,4 +77,5 @@ export const {
   useUploadProductImageMutation,
   useDeleteProductMutation,
   useCreateReviewMutation,
+  useGetTopProductsQuery,
 } = productsApiSlice;

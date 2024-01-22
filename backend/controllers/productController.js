@@ -6,12 +6,19 @@ import Product from '../models/productModel.js';
 //@access Public
 const getProducts = asyncHandler(async (req, res) => {
   //how many product showed at page
+  console.log(req.query);
   const pageSize = Number(req.query.pageSize) || 2;
+  //which page
   const page = Number(req.query.pageNumber) || 1;
 
-  const countAllDocuments = await Product.countDocuments();
+  //keyword to search a product (this is mongoDB param)
+  const searchKeyword = req.query.searchKeyword
+    ? { name: { $regex: req.query.searchKeyword, $options: 'i' } }
+    : {};
 
-  const products = await Product.find({})
+  const countAllDocuments = await Product.countDocuments(searchKeyword);
+
+  const products = await Product.find(searchKeyword)
     .limit(pageSize)
     .skip((page - 1) * pageSize);
   return res
@@ -135,6 +142,15 @@ const createReview = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc  Get top rated products
+// @route GET /api/products/top
+// @access Public
+const getTopProducts = asyncHandler(async (req, res) => {
+  const products = await Product.find({}).sort({ rating: -1 }).limit(3);
+  console.log(products);
+  res.status(200).json(products);
+});
+
 export {
   getProducts,
   getProductById,
@@ -142,4 +158,5 @@ export {
   updateProduct,
   deleteProduct,
   createReview,
+  getTopProducts,
 };
