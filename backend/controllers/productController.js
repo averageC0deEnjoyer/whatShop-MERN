@@ -85,10 +85,51 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
+//since this is 'create' maybe we can use POST instead of PUT.
+//@desc   Create a review
+//@route  POST /api/products/:id/reviews
+//@access Private
+const createReview = asyncHandler(async (req, res) => {
+  const { rating, comment } = req.body;
+  //check if product exist
+  const product = await Product.findById(req.params.id);
+  console.log(product);
+  if (product) {
+    //cant create a review if a user already make it once
+    const productAlreadyReviewedByUser = product.reviews.find((review) =>
+      review.user.equals(req.user._id)
+    );
+    if (productAlreadyReviewedByUser) {
+      res.status(404);
+      throw new Error('User Already Reviewed this Product');
+    }
+    //have to update reviews, rating, numReviews
+    //create review from input
+    const review = {
+      user: req.user._id,
+      name: req.user.name,
+      rating: Number(rating),
+      comment,
+    };
+    product.reviews.push(review);
+    product.numReviews = product.reviews.length;
+    product.rating =
+      product.reviews.reduce((a, i) => a + Number(i.rating), 0) /
+      product.reviews.length;
+
+    await product.save();
+    return res.status(201).json({ message: 'Review Added' });
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
 export {
   getProducts,
   getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
+  createReview,
 };
