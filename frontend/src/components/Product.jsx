@@ -16,7 +16,14 @@ const Product = ({ product }) => {
           </Card.Title>
         </Link>
         <Card.Text as="div">
-          <Rating text={product.numReviews} rating={product.rating} />
+          <Rating
+            text={
+              Number(product.numReviews) > 1
+                ? `${product.numReviews} reviews`
+                : `${product.numReviews} review`
+            }
+            rating={product.rating}
+          />
         </Card.Text>
         <Card.Text as="h3">${product.price}</Card.Text>
       </Card.Body>
