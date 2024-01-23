@@ -1,5 +1,6 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import Order from '../models/orderModel.js';
+import Product from '../models/productModel.js';
 
 //@desc     Create new order
 //@route    POST /api/orders
@@ -34,6 +35,23 @@ const createNewOrderItems = asyncHandler(async (req, res) => {
       totalPrice,
     });
     const createdOrder = await order.save();
+    //also update the product countInStock
+    //fetch all products that is sold
+    const products = await Product.find({
+      _id: {
+        $in: order.orderItems.map((item) => item.product),
+      },
+    });
+    //then we mutate each sold product
+    products.forEach(async (product) => {
+      //match the item
+      const itemSold = order.orderItems.find((item) =>
+        item.product.equals(product._id)
+      );
+      product.countInStock =
+        Number(product.countInStock) - Number(itemSold.qty);
+      await product.save();
+    });
     return res.status(201).json(createdOrder);
   }
 });

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import CheckoutSteps from '../components/CheckoutSteps';
 import {
   Row,
@@ -15,12 +15,23 @@ import { toast } from 'react-toastify';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice';
+import { useGetProductsQuery } from '../slices/productsApiSlice';
 import { clearCartItems } from '../slices/cartSlice';
 
 const PlaceOrderScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cart = useSelector((store) => store.cart);
+
+  const { pageNumber, searchKeyword } = useParams();
+  //refetch new data after we place order so the countInStock number is updated
+  const { data, refetch, isLoading } = useGetProductsQuery({
+    searchKeyword,
+    pageNumber,
+  });
+
+  const [createOrder, { isLoading: loadingCreateOrder, error }] =
+    useCreateOrderMutation();
 
   useEffect(() => {
     // if there is no address or no payment method, then will redirect to the page.
@@ -31,9 +42,6 @@ const PlaceOrderScreen = () => {
       navigate('/payment');
     }
   }, [cart.paymentMethod, cart.shippingAddress, navigate]);
-
-  const [createOrder, { isLoading: loadingCreateOrder, error }] =
-    useCreateOrderMutation();
 
   const placeOrderHandler = async () => {
     try {
@@ -47,6 +55,7 @@ const PlaceOrderScreen = () => {
         totalPrice: cart.totalPrice,
       }).unwrap();
       dispatch(clearCartItems());
+      refetch();
       navigate(`/order/${res._id}`);
     } catch (err) {
       toast.error(err);

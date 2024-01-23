@@ -20,6 +20,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       query: (id) => ({
         url: `${PRODUCTS_URL}/${id}`,
       }),
+      providesTags: ['Products'],
     }),
     createProduct: builder.mutation({
       query: () => ({
