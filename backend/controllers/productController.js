@@ -1,6 +1,6 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import Product from '../models/productModel.js';
-
+import Order from '../models/orderModel.js';
 //@desc   Fetch all products
 //@route  GET /api/products
 //@access Public
@@ -61,10 +61,10 @@ const createProduct = asyncHandler(async (req, res) => {
 //@access Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
   const { id: productId } = req.params;
-  console.log(req.body);
+  // console.log(req.body);
   const { name, brand, category, image, description, price, countInStock } =
     req.body;
-  console.log(req.body);
+  // console.log(req.body);
   const product = await Product.findById(productId);
 
   if (product) {
@@ -110,7 +110,17 @@ const createReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body;
   //check if product exist
   const product = await Product.findById(req.params.id);
-  console.log(product);
+  // console.log(product);
+  //REF1:check if user ever bought item
+  const orders = await Order.find({ user: req.user._id });
+  const everBuyProduct = orders.some((order) =>
+    order.orderItems.some((item) => item.product.equals(req.params.id))
+  );
+  // console.log(everBuyProduct);
+  if (!everBuyProduct) {
+    res.status(404);
+    throw new Error('You never bought this item');
+  }
   if (product) {
     //cant create a review if a user already make it once
     const productAlreadyReviewedByUser = product.reviews.find((review) =>
