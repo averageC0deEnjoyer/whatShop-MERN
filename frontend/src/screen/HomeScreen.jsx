@@ -26,7 +26,7 @@ const HomeScreen = () => {
         </Link>
       )}
       {isLoading ? (
-        <Loader />
+        ''
       ) : error ? (
         <Message variant="danger">
           {error?.data?.message || error.error}
