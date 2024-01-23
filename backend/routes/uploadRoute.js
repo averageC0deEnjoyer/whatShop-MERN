@@ -21,23 +21,28 @@ const storage = multer.diskStorage({
 });
 
 //check file type (only allow image file extension)
-function checkFileTypes(file, cb) {
-  const filetypes = /jpg|jpeg|png/;
+function fileFilter(req, file, cb) {
+  const filetypes = /jpe?g|png|webp/;
+  const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
+
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
+  const mimetype = mimetypes.test(file.mimetype);
+
   if (extname && mimetype) {
-    return cb(null, true);
+    cb(null, true);
   } else {
-    cb('Images only');
+    cb(new Error('Images only!'), false);
   }
 }
 
 const upload = multer({
   storage,
-  // checkFileTypes,
+  fileFilter,
 });
 
-router.post('/', upload.single('image'), (req, res) => {
+const uploadSingleImage = upload.single('image');
+
+router.post('/', uploadSingleImage, (req, res) => {
   res.send({
     message: 'Image uploaded',
     image: `/${req.file.path}`,

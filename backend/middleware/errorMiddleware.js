@@ -8,11 +8,11 @@ const errorHandler = (err, req, res, next) => {
   let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   let message = err.message;
   console.log(message);
-  // check for mongoose bad objectId
-  if (err.name === 'CastError' && err.kind === 'ObjectId') {
-    message = 'Resource not found';
-    statusCode = 404;
-  }
+  // check for mongoose bad objectId //refactor to using checkObjectId middleware
+  // if (err.name === 'CastError' && err.kind === 'ObjectId') {
+  //   message = 'Resource not found';
+  //   statusCode = 404;
+  // }
 
   return res.status(statusCode).json({
     message,

@@ -21,8 +21,11 @@ const LoginScreen = () => {
 
   //to check if there is redirect or not
   const { search } = useLocation();
+  console.log(search);
   const sp = new URLSearchParams(search);
+  console.log(sp);
   const redirect = sp.get('redirect') || '/';
+  console.log(redirect);
   // console.log(redirect);
 
   useEffect(() => {
