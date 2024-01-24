@@ -89,7 +89,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
   // console.log(req.body);
   // console.log(Boolean(req.body.password));
-  console.log(user);
+  // console.log(user);
   if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
@@ -97,7 +97,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       user.password = req.body.password;
     }
     const updatedUser = await user.save();
-    console.log(updatedUser);
+    // console.log(updatedUser);
     return res.status(200).json({
       _id: updatedUser._id,
       name: updatedUser.name,
@@ -162,13 +162,13 @@ const updateUser = asyncHandler(async (req, res) => {
   //since at the frontend were going to populate the form with existing data
   //then we dont have to type user.name = req.body.name || user.name, just user.name = req.body.name
   const { name, email, isAdmin } = req.body;
-  console.log(user);
+  // console.log(user);
   if (user) {
     user.name = name;
     user.email = email;
     user.isAdmin = Boolean(isAdmin);
     const updatedUser = await user.save();
-    console.log(updatedUser);
+    // console.log(updatedUser);
     return res.status(200).json({
       _id: updatedUser._id,
       name: updatedUser.name,

@@ -72,7 +72,7 @@ const EditProductScreen = () => {
     formData.append('image', e.target.files[0]);
     try {
       const res = await uploadProductImage(formData).unwrap();
-      console.log(res);
+      // console.log(res);
       toast.success(res.message);
       setImage(res.image);
     } catch (error) {

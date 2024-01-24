@@ -6,7 +6,7 @@ import Order from '../models/orderModel.js';
 //@access Public
 const getProducts = asyncHandler(async (req, res) => {
   //how many product showed at page
-  console.log(req.query);
+  // console.log(req.query);
   const pageSize = Number(req.query.pageSize) || 2;
   //which page
   const page = Number(req.query.pageNumber) || 1;
@@ -30,7 +30,7 @@ const getProducts = asyncHandler(async (req, res) => {
 //@route  GET /api/products/:id
 //@access Public
 const getProductById = asyncHandler(async (req, res) => {
-  console.log(req.params);
+  // console.log(req.params);
   const { id: productId } = req.params;
   const selectedProduct = await Product.findById(productId);
   if (selectedProduct) {

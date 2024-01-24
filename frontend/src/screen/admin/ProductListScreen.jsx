@@ -18,7 +18,7 @@ const ProductListScreen = () => {
     searchKeyword,
     pageNumber,
   });
-  console.log(data);
+  // console.log(data);console.log
   const [createProduct, { isLoading: loadingCreate }] =
     useCreateProductMutation();
 

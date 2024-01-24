@@ -23,7 +23,7 @@ const RegisterScreen = () => {
 
   //to check if there is redirect or not
   const { search } = useLocation();
-  console.log(search);
+  // console.log(search);
   const sp = new URLSearchParams(search);
   const redirect = sp.get('redirect') || '/';
 
@@ -42,7 +42,7 @@ const RegisterScreen = () => {
     } else {
       try {
         const res = await registerToServer({ name, email, password }).unwrap();
-        console.log(res);
+        // console.log(res);
         dispatch(setCredentials(res));
         navigate(redirect);
       } catch (err) {
