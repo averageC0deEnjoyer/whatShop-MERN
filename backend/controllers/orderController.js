@@ -1,53 +1,71 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
+import { calculatePrices } from '../utils/calculatePrices.js';
+import { verifyPayPalPayment, checkIfNewTransaction } from '../utils/paypal.js';
 
 //@desc     Create new order
 //@route    POST /api/orders
 //@access   Private
 const createNewOrderItems = asyncHandler(async (req, res) => {
-  const {
-    orderItems,
-    shippingAddress,
-    paymentMethod,
-    itemsPrice,
-    taxPrice,
-    shippingPrice,
-    totalPrice,
-  } = req.body;
-
+  const { orderItems, shippingAddress, paymentMethod } = req.body;
+  console.log(orderItems);
   if (orderItems && orderItems.length === 0) {
     res.status(400);
     throw new Error('No order items');
   } else {
-    const order = new Order({
-      user: req.user._id,
-      orderItems: orderItems.map((item) => ({
-        ...item,
-        product: item._id,
+    //we fetch the item from DB to take the price prop for each item
+    //so even if the user tamper the data from client, the calculation of the price will be done at server
+    const itemsFromDB = await Product.find({
+      //mongoDB $in expect an array
+      //
+      _id: { $in: orderItems.map((item) => item._id) },
+    });
+    console.log(itemsFromDB);
+    //iterate for every item in an order, attach price from backend.
+    const dbOrderItems = orderItems.map((itemFromClient) => {
+      const matchingItemFromDB = itemsFromDB.find((itemFromDB) =>
+        itemFromDB._id.equals(itemFromClient._id)
+      );
+      return {
+        ...itemFromClient,
+        product: itemFromClient._id,
+        price: matchingItemFromDB.price,
         _id: null,
-      })),
+      };
+    });
+    console.log(dbOrderItems);
+
+    const { itemsPrice, taxPrice, shippingPrice, totalPrice } =
+      calculatePrices(dbOrderItems);
+
+    const order = new Order({
+      orderItems: dbOrderItems,
+      user: req.user._id,
+      itemsPrice,
+      shippingPrice,
+      taxPrice,
+      totalPrice,
       shippingAddress,
       paymentMethod,
-      itemsPrice,
-      taxPrice,
-      shippingPrice,
-      totalPrice,
     });
+
     const createdOrder = await order.save();
-    //also update the product countInStock
-    //fetch all products that is sold
+    // also update the product countInStock
+    // fetch all products that is sold
     const products = await Product.find({
       _id: {
         $in: order.orderItems.map((item) => item.product),
       },
     });
     //then we mutate each sold product
+    //this one maybe can be done concurrently
     products.forEach(async (product) => {
       //match the item
       const itemSold = order.orderItems.find((item) =>
         item.product.equals(product._id)
       );
+      //update the product.countInStock
       product.countInStock =
         Number(product.countInStock) - Number(itemSold.qty);
       await product.save();
