@@ -9,6 +9,7 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: order,
       }),
+      invalidatesTags: ['Products'],
     }),
     getOrderDetail: builder.query({
       query: (orderId) => ({

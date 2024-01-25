@@ -41,7 +41,7 @@ const ProductScreen = () => {
     isError,
     refetch,
     error,
-  } = useGetProductDetailQuery(productId);
+  } = useGetProductDetailQuery(productId, { refetchOnMountOrArgChange: true });
 
   const addToCartHandler = () => {
     dispatch(addToCart({ ...product, qty }));

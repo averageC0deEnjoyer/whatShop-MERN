@@ -10,26 +10,27 @@ import { useGetMyOrdersQuery } from '../slices/ordersApiSlice';
 import { setCredentials } from '../slices/authSlice';
 
 const ProfileScreen = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  //maybe we dont need useEffect here.
+  const { userInfo } = useSelector((store) => store.auth);
+
+  const [name, setName] = useState(userInfo?.name || '');
+  const [email, setEmail] = useState(userInfo?.email || '');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const dispatch = useDispatch();
-
-  const { userInfo } = useSelector((store) => store.auth);
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useUpdateProfileMutation();
 
   const { data: orders, isLoading, error } = useGetMyOrdersQuery();
 
-  useEffect(() => {
-    //fill name and email if exist
-    if (userInfo) {
-      setName(userInfo.name);
-      setEmail(userInfo.email);
-    }
-  }, [userInfo.name, userInfo.email, userInfo]);
+  // useEffect(() => {
+  //   //fill name and email if exist
+  //   if (userInfo) {
+  //     setName(userInfo.name);
+  //     setEmail(userInfo.email);
+  //   }
+  // }, [userInfo.name, userInfo.email, userInfo]);
 
   const submitHandler = async (e) => {
     e.preventDefault();

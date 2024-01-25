@@ -66,7 +66,7 @@ const OrderDetailScreen = () => {
   function onApprove(data, actions) {
     return actions.order.capture().then(async function (details) {
       try {
-        console.log(details);
+        // console.log(details);
         await payOrder({ orderId, details }).unwrap();
         refetch();
         toast.success('Payment Successful');
@@ -168,7 +168,7 @@ const OrderDetailScreen = () => {
                       <Image src={item.image} alt={item.name} fluid rounded />
                     </Col>
                     <Col>
-                      <Link to={`/product/${item.product}`}>{item.name}</Link>
+                      <Link to={`/products/${item.product}`}>{item.name}</Link>
                     </Col>
                     <Col md={4}>
                       {item.qty} x ${item.price} = ${item.qty * item.price}

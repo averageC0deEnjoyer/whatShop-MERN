@@ -2,33 +2,17 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import CheckoutSteps from '../components/CheckoutSteps';
-import {
-  Row,
-  Col,
-  ListGroup,
-  Image,
-  Card,
-  Button,
-  ListGroupItem,
-} from 'react-bootstrap';
+import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice';
-import { useGetProductsQuery } from '../slices/productsApiSlice';
 import { clearCartItems } from '../slices/cartSlice';
 
 const PlaceOrderScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cart = useSelector((store) => store.cart);
-
-  const { pageNumber, searchKeyword } = useParams();
-  //refetch new data after we place order so the countInStock number is updated
-  const { data, refetch, isLoading } = useGetProductsQuery({
-    searchKeyword,
-    pageNumber,
-  });
 
   const [createOrder, { isLoading: loadingCreateOrder, error }] =
     useCreateOrderMutation();
@@ -55,7 +39,6 @@ const PlaceOrderScreen = () => {
         totalPrice: cart.totalPrice,
       }).unwrap();
       dispatch(clearCartItems());
-      refetch();
       navigate(`/order/${res._id}`);
     } catch (err) {
       toast.error(err);

@@ -11,14 +11,14 @@ import { toast } from 'react-toastify';
 
 const UserListScreen = () => {
   const { data: users, refetch, isLoading, error } = useGetUsersQuery();
-  // console.log(users);
 
   const [deleteUser, { isLoading: loadingDeleteUser }] =
     useDeleteUserMutation();
 
   async function deleteUserHandler(userId) {
     try {
-      await deleteUser(userId);
+      //dont forget unwrap cause it will show different message
+      await deleteUser(userId).unwrap();
       refetch();
       toast.success('User Deleted');
     } catch (error) {
