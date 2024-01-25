@@ -11,14 +11,19 @@ const getProducts = asyncHandler(async (req, res) => {
   //which page
   const page = Number(req.query.pageNumber) || 1;
 
-  //keyword to search a product (this is mongoDB param)
-  const searchKeyword = req.query.searchKeyword
-    ? { name: { $regex: req.query.searchKeyword, $options: 'i' } }
-    : {};
+  const options = {};
 
-  const countAllDocuments = await Product.countDocuments(searchKeyword);
+  if (req.query.searchKeyword) {
+    options.name = { $regex: req.query.searchKeyword, $options: 'i' };
+  }
+  if (req.query.categoryName) {
+    options.category = req.query.categoryName;
+  }
 
-  const products = await Product.find(searchKeyword)
+  // console.log(options);
+  const countAllDocuments = await Product.countDocuments(options);
+
+  const products = await Product.find(options)
     .limit(pageSize)
     .skip((page - 1) * pageSize);
   return res
@@ -157,8 +162,19 @@ const createReview = asyncHandler(async (req, res) => {
 // @access Public
 const getTopProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({}).sort({ rating: -1 }).limit(3);
-  console.log(products);
+  // console.log(products);
   res.status(200).json(products);
+});
+
+// @desc  Get all categories (for header)
+// @route GET /api/products/categories
+// @access Public
+const getCategories = asyncHandler(async (req, res) => {
+  const categories = await Product.find({}, { category: 1 });
+  // console.log(categories);
+  const allCategories = categories.map((item) => item.category);
+  const uniqueCategory = Array.from(new Set(allCategories));
+  return res.status(200).json(uniqueCategory);
 });
 
 export {
@@ -169,4 +185,5 @@ export {
   deleteProduct,
   createReview,
   getTopProducts,
+  getCategories,
 };

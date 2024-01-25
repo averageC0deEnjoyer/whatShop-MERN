@@ -9,16 +9,22 @@ import ProductCarousel from '../components/ProductCarousel';
 
 const HomeScreen = () => {
   // console.log(params);
-  const { pageNumber, searchKeyword } = useParams();
-
-  const { data, isLoading, error } = useGetProductsQuery({
-    searchKeyword,
-    pageNumber,
-  });
+  const param = useParams();
+  // console.log(param);
+  const { pageNumber, searchKeyword, categoryName } = param;
+  const { data, isLoading, error } = useGetProductsQuery(
+    {
+      searchKeyword,
+      pageNumber,
+      categoryName,
+    },
+    { refetchOnMountOrArgChange: true }
+  );
+  // console.log(data);
 
   return (
     <>
-      {!searchKeyword ? (
+      {!searchKeyword && !categoryName ? (
         <ProductCarousel />
       ) : (
         <Link to="/" className="btn btn-light">
@@ -45,6 +51,7 @@ const HomeScreen = () => {
             pages={data.pages}
             page={data.page}
             searchKeyword={searchKeyword ? searchKeyword : ''}
+            categoryName={categoryName ? categoryName : ''}
           />
         </>
       )}

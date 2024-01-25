@@ -3,13 +3,17 @@ import { Form, Button } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const SearchBox = () => {
-  const { searchKeyword: urlSearch } = useParams();
+  const { searchKeyword: urlSearch, categoryName } = useParams();
+  // console.log(categoryName);
   const [searchKeyword, setSearchKeyword] = useState(urlSearch || '');
   const navigate = useNavigate();
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (searchKeyword.trim()) {
+    if (searchKeyword.trim() && categoryName) {
+      navigate(`/category/${categoryName}/search/${searchKeyword}`);
+      setSearchKeyword('');
+    } else if (searchKeyword.trim()) {
       navigate(`/search/${searchKeyword}`);
       setSearchKeyword('');
     } else {
