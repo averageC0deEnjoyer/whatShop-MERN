@@ -109,7 +109,9 @@ const ProfileScreen = () => {
         {isLoading ? (
           <Loader />
         ) : error ? (
-          <Message variant="danger">{error}</Message>
+          <Message variant="danger">
+            {error?.data?.message || error.error}
+          </Message>
         ) : orders.length === 0 ? (
           <Message variant="danger">No Order Yet</Message>
         ) : (

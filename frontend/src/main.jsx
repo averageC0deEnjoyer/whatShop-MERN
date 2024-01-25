@@ -19,7 +19,7 @@ import LoginScreen from './screen/LoginScreen.jsx';
 import RegisterScreen from './screen/RegisterScreen.jsx';
 import ShippingScreen from './screen/ShippingScreen.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
-import PaymentScreen from './screen/PaymentScreen.jsx';
+import SelectPaymentScreen from './screen/SelectPaymentScreen.jsx';
 import PlaceOrderScreen from './screen/PlaceOrderScreen.jsx';
 import OrderDetailScreen from './screen/OrderDetailScreen.jsx';
 import ProfileScreen from './screen/ProfileScreen.jsx';
@@ -62,7 +62,7 @@ const router = createBrowserRouter(
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="/shipping" element={<ShippingScreen />} />
-        <Route path="/payment" element={<PaymentScreen />} />
+        <Route path="/payment" element={<SelectPaymentScreen />} />
         <Route path="/placeorder" element={<PlaceOrderScreen />} />
         <Route path="/order/:id" element={<OrderDetailScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />

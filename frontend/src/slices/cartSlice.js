@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { updateCart } from '../utils/cartUtils';
 
 const initialState = localStorage.getItem('cart')
   ? JSON.parse(localStorage.getItem('cart'))
@@ -26,7 +25,6 @@ const cartSlice = createSlice({
       }
       // return the processed state or final state.
       // we processed the cartState by adding totalPrice , shipping price, tax price, allTotalPrice(included shipping and tax)
-      return updateCart(state);
     },
     removeFromCart: (state, action) => {
       const { id: productId } = action.payload;
@@ -34,7 +32,6 @@ const cartSlice = createSlice({
         (item) => item._id !== productId
       );
       // we have to return the final state
-      return updateCart(state);
     },
     saveShippingAddress: (state, action) => {
       state.shippingAddress = action.payload;

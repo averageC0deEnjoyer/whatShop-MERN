@@ -9,6 +9,7 @@ import { verifyPayPalPayment, checkIfNewTransaction } from '../utils/paypal.js';
 //@access   Private
 const createNewOrderItems = asyncHandler(async (req, res) => {
   const { orderItems, shippingAddress, paymentMethod } = req.body;
+  //maybe we can put some if condition to check if user not provided shippingaddress or payment method then throw error
   console.log(shippingAddress);
   console.log(paymentMethod);
   console.log(orderItems);
