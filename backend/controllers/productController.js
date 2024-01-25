@@ -7,7 +7,7 @@ import Order from '../models/orderModel.js';
 const getProducts = asyncHandler(async (req, res) => {
   //how many product showed at page
   // console.log(req.query);
-  const pageSize = Number(req.query.pageSize) || 2;
+  const pageSize = process.env.PAGINATION_LIMIT;
   //which page
   const page = Number(req.query.pageNumber) || 1;
 
