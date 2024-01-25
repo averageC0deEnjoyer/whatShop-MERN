@@ -9,6 +9,8 @@ import { verifyPayPalPayment, checkIfNewTransaction } from '../utils/paypal.js';
 //@access   Private
 const createNewOrderItems = asyncHandler(async (req, res) => {
   const { orderItems, shippingAddress, paymentMethod } = req.body;
+  console.log(shippingAddress);
+  console.log(paymentMethod);
   console.log(orderItems);
   if (orderItems && orderItems.length === 0) {
     res.status(400);
@@ -18,10 +20,23 @@ const createNewOrderItems = asyncHandler(async (req, res) => {
     //so even if the user tamper the data from client, the calculation of the price will be done at server
     const itemsFromDB = await Product.find({
       //mongoDB $in expect an array
-      //
+
       _id: { $in: orderItems.map((item) => item._id) },
     });
-    console.log(itemsFromDB);
+    // console.log(itemsFromDB);
+
+    //check if qty from client > available stock from DB
+    const invalidQty = orderItems.some((itemFromClient) => {
+      const matchingItemFromDB = itemsFromDB.find((itemFromDB) =>
+        itemFromDB._id.equals(itemFromClient._id)
+      );
+      if (itemFromClient.qty > matchingItemFromDB.countInStock) return true;
+      return false;
+    });
+    if (invalidQty) {
+      res.status(404);
+      throw new Error('Stock not available');
+    }
     //iterate for every item in an order, attach price from backend.
     const dbOrderItems = orderItems.map((itemFromClient) => {
       const matchingItemFromDB = itemsFromDB.find((itemFromDB) =>
@@ -34,7 +49,7 @@ const createNewOrderItems = asyncHandler(async (req, res) => {
         _id: null,
       };
     });
-    console.log(dbOrderItems);
+    // console.log(dbOrderItems);
 
     const { itemsPrice, taxPrice, shippingPrice, totalPrice } =
       calculatePrices(dbOrderItems);
@@ -107,7 +122,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 //@route    PUT /api/orders/:id/pay
 //@access   Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { verified, value } = await verifyPayPalPayment(req.body.id);
   if (!verified) throw new Error('Payment not verified');
 
