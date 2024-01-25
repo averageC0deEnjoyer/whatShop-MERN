@@ -1,6 +1,7 @@
 Live Demo: 
 ## Welcome to whatShop
-
+https://github.com/averageC0deEnjoyer/whatShop-MERN/assets/136006438/80cfe2d4-caa8-40e9-98c6-fcf5193d7f79
+https://github.com/averageC0deEnjoyer/whatShop-MERN/assets/136006438/d2831b5f-6599-45e3-adab-3337e6578d25
 This is a project that I create to deepen my understanding about fullstack development, specifically in MERN stack.
 Project created by following Brad Traversy video in MERN Stack.
 This project is a simple e-commerce, there can be 2 user (normal user and admin user)
