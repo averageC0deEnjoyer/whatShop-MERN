@@ -1,3 +1,4 @@
+Live Demo: 
 ## Welcome to whatShop
 
 This is a project that I create to deepen my understanding about fullstack development, specifically in MERN stack.
